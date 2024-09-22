@@ -9,7 +9,7 @@
 
 # This is my strategy portfolio
 
-In here I document various strategy and testing results.
+In here I document various strategies and testing results.
 
 The strategies should be documented according to the following template.
 
@@ -53,10 +53,6 @@ The strategies should be documented according to the following template.
 ## Calculations
 
 ### Buy
-
-$
-
-$
 
 **Triggers:**
 

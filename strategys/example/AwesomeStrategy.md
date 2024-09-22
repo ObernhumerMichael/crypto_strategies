@@ -39,6 +39,8 @@ minimal_roi = {"0": 0.10}
 stoploss = -0.02
 trailing_stop = False
 
+# Short SMA is 4x as sensitive as the long SMA
+# Uses rather long SMAs to avoid some volatility
 sma_short = 50
 sma_long = 200
 
@@ -51,16 +53,15 @@ rsi_lower_bound = 30
 
 ### Buy
 
-$
-SMA_{short} \uparrow SMA_{long}\\
-RSI > RSI_{border}\\
-RSI < RSI_{upper\ bound} \\
-VOLUME > 0\\
-$
+$$SMA_{short} \uparrow SMA_{long}$$
+
+$$RSI > RSI_{border}$$
+
+$$RSI < RSI_{upper\ bound}$$
 
 **Triggers:**
 
-- The SMAs are the main indicators that should indicate a change in trend.\
+- The SMAs are the main indicators that should indicate a change in trend.
 
 **Guards:**
 
@@ -69,20 +70,19 @@ $
 
 ### Sell
 
-```latex
-SMA_{short} \downarrow SMA_{long}\\
-RSI < RSI_{border}\\
-RSI > RSI_{lower\ bound}\\
-VOLUME > 0\\
-```
+$$SMA_{short} \downarrow SMA_{long}$$
+
+$$RSI < RSI_{border}$$
+
+$$RSI > RSI_{lower\ bound}$$
 
 **Triggers:**
 
-- The SMAs are the main indicators that should indicate a change in trend.\
+- The SMAs are the main indicators that should indicate a change in trend.
 
 **Guards:**
 
-- $RSI > RSI_{border}$ is used to filter out signals that happen due to volatility.
+- $RSI < RSI_{border}$ is used to filter out signals that happen due to volatility.
 - $RSI > RSI_{upper\ lower}$ to avoid selling at an oversold scenario.
 
 # Backtesting Results
