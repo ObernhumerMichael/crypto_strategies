@@ -53,21 +53,21 @@ class Testing(IStrategy):
     timeframe = "5m"
 
     # Can this strategy go short?
-    can_short: bool = False
+    can_short: bool = True
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
-    minimal_roi = {"0": 0.01}
+    minimal_roi = {"0": 0.5}
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.005
+    stoploss = -0.5
 
     # Trailing stoploss
-    trailing_stop = True
-    trailing_only_offset_is_reached = True
-    trailing_stop_positive = 0.003
-    trailing_stop_positive_offset = 0.005  # Disabled / not configured
+    # trailing_stop = True
+    # trailing_only_offset_is_reached = True
+    # trailing_stop_positive = 0.003
+    # trailing_stop_positive_offset = 0.005  # Disabled / not configured
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -78,12 +78,12 @@ class Testing(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 20
+    startup_candle_count: int = 500
 
     # Define the parameter spaces
     rsi = IntParameter(2, 20, default=14)
-    sma_short = IntParameter(3, 50, default=5)
-    sma_long = IntParameter(1, 50, default=15)
+    sma_short = IntParameter(3, 50, default=150)
+    sma_long = IntParameter(1, 50, default=500)
 
     order_types = {
         "entry": "limit",
@@ -127,18 +127,18 @@ class Testing(IStrategy):
         )
 
         # Bollinger Bands
-        bollinger = qtpylib.bollinger_bands(
-            qtpylib.typical_price(dataframe), window=20, stds=2
-        )
-        dataframe["bb_lowerband"] = bollinger["lower"]
-        dataframe["bb_middleband"] = bollinger["mid"]
-        dataframe["bb_upperband"] = bollinger["upper"]
-        dataframe["bb_percent"] = (dataframe["close"] - dataframe["bb_lowerband"]) / (
-            dataframe["bb_upperband"] - dataframe["bb_lowerband"]
-        )
-        dataframe["bb_width"] = (
-            dataframe["bb_upperband"] - dataframe["bb_lowerband"]
-        ) / dataframe["bb_middleband"]
+        # bollinger = qtpylib.bollinger_bands(
+        #     qtpylib.typical_price(dataframe), window=20, stds=2
+        # )
+        # dataframe["bb_lowerband"] = bollinger["lower"]
+        # dataframe["bb_middleband"] = bollinger["mid"]
+        # dataframe["bb_upperband"] = bollinger["upper"]
+        # dataframe["bb_percent"] = (dataframe["close"] - dataframe["bb_lowerband"]) / (
+        #     dataframe["bb_upperband"] - dataframe["bb_lowerband"]
+        # )
+        # dataframe["bb_width"] = (
+        #     dataframe["bb_upperband"] - dataframe["bb_lowerband"]
+        # ) / dataframe["bb_middleband"]
 
         # SMA
         dataframe[f"sma_short"] = pta.sma(
@@ -149,28 +149,58 @@ class Testing(IStrategy):
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        conditions = []
-        # RSI
-        # conditions.append(dataframe[f"rsi_{self.rsi.value}"] > 0)
-        # conditions.append(dataframe[f"rsi_{self.rsi.value}"] < 20)
+        conditions_long = []
 
-        conditions.append(dataframe["bb_percent"] < 0)
+        conditions_long.append(
+            qtpylib.crossed_above(dataframe["sma_short"], dataframe["sma_long"])
+        )
 
         # Check that volume is not 0
-        conditions.append(dataframe["volume"] > 0)
+        conditions_long.append(dataframe["volume"] > 0)
 
-        if conditions:
-            dataframe.loc[reduce(lambda x, y: x & y, conditions), "enter_long"] = 1
+        if conditions_long:
+            dataframe.loc[reduce(lambda x, y: x & y, conditions_long), "enter_long"] = 1
+
+        # -----------short----------------
+        conditions_short = []
+
+        conditions_short.append(
+            qtpylib.crossed_above(dataframe["sma_long"], dataframe["sma_short"])
+        )
+        # Check that volume is not 0
+        conditions_short.append(dataframe["volume"] > 0)
+
+        if conditions_short:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions_short), "enter_short"
+            ] = 1
+
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        conditions = []
-        # conditions.append((dataframe[f"rsi_{self.rsi.value}"] > 70))
+        conditions_long = []
 
+        conditions_long.append(
+            qtpylib.crossed_above(dataframe["sma_long"], dataframe["sma_short"])
+        )
         # Check that volume is not 0
-        conditions.append(dataframe["bb_percent"] > 0.8)
-        conditions.append(dataframe["volume"] > 0)
+        conditions_long.append(dataframe["volume"] > 0)
 
-        if conditions:
-            dataframe.loc[reduce(lambda x, y: x & y, conditions), "exit_long"] = 1
+        if conditions_long:
+            dataframe.loc[reduce(lambda x, y: x & y, conditions_long), "exit_long"] = 1
+
+        # -----------short----------------
+        conditions_short = []
+
+        conditions_short.append(
+            qtpylib.crossed_above(dataframe["sma_short"], dataframe["sma_long"])
+        )
+        # Check that volume is not 0
+        conditions_short.append(dataframe["volume"] > 0)
+
+        if conditions_short:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions_short), "exit_short"
+            ] = 1
+
         return dataframe
