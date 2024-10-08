@@ -44,13 +44,13 @@ from technical import qtpylib
 from functools import reduce
 
 
-class Testing(IStrategy):
+class RSI_scalping(IStrategy):
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
 
     # Optimal timeframe for the strategy.
-    timeframe = "5m"
+    timeframe = "1m"
 
     # Can this strategy go short?
     can_short: bool = False
@@ -61,7 +61,7 @@ class Testing(IStrategy):
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.5
+    stoploss = -0.05
 
     # Trailing stoploss
     # trailing_stop = True
@@ -78,12 +78,11 @@ class Testing(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 500
+    startup_candle_count: int = 50
 
     # Define the parameter spaces
     rsi = IntParameter(2, 20, default=14)
-    sma_short = IntParameter(3, 50, default=150)
-    sma_long = IntParameter(1, 50, default=500)
+    candlestick_patterns = ["engulfing"]
 
     order_types = {
         "entry": "limit",
@@ -107,7 +106,7 @@ class Testing(IStrategy):
         "subplots": {
             # Subplots - each dict defines one additional plot
             "RSI": {
-                f"rsi_{rsi.value}": {"color": "red"},
+                f"rsi": {"color": "red"},
             },
             "BB_width": {
                 "bb_width": {"color": "orange"},
@@ -122,38 +121,37 @@ class Testing(IStrategy):
         """Generate all indicators used by the strategy"""
 
         # RSI
-        dataframe[f"rsi_{self.rsi.value}"] = pta.rsi(
-            dataframe["close"], length=self.rsi.value
-        )
+        dataframe[f"rsi"] = pta.rsi(dataframe["close"], length=self.rsi.value)
 
         # Bollinger Bands
-        # bollinger = qtpylib.bollinger_bands(
-        #     qtpylib.typical_price(dataframe), window=20, stds=2
-        # )
-        # dataframe["bb_lowerband"] = bollinger["lower"]
-        # dataframe["bb_middleband"] = bollinger["mid"]
-        # dataframe["bb_upperband"] = bollinger["upper"]
-        # dataframe["bb_percent"] = (dataframe["close"] - dataframe["bb_lowerband"]) / (
-        #     dataframe["bb_upperband"] - dataframe["bb_lowerband"]
-        # )
-        # dataframe["bb_width"] = (
-        #     dataframe["bb_upperband"] - dataframe["bb_lowerband"]
-        # ) / dataframe["bb_middleband"]
-
-        # SMA
-        dataframe[f"sma_short"] = pta.sma(
-            dataframe["close"], length=self.sma_short.value
+        bollinger = qtpylib.bollinger_bands(
+            qtpylib.typical_price(dataframe), window=20, stds=2
         )
-        dataframe[f"sma_long"] = pta.sma(dataframe["close"], length=self.sma_long.value)
+        dataframe["bb_lowerband"] = bollinger["lower"]
+        dataframe["bb_middleband"] = bollinger["mid"]
+        dataframe["bb_upperband"] = bollinger["upper"]
+        dataframe["bb_percent"] = (dataframe["close"] - dataframe["bb_lowerband"]) / (
+            dataframe["bb_upperband"] - dataframe["bb_lowerband"]
+        )
+        dataframe["bb_width"] = (
+            dataframe["bb_upperband"] - dataframe["bb_lowerband"]
+        ) / dataframe["bb_middleband"]
+
+        dataframe[self.candlestick_patterns] = pta.cdl_pattern(
+            open_=dataframe["open"],
+            high=dataframe["high"],
+            low=dataframe["low"],
+            close=dataframe["close"],
+            name=self.candlestick_patterns,
+        )
 
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions_long = []
 
-        conditions_long.append(
-            qtpylib.crossed_above(dataframe["sma_short"], dataframe["sma_long"])
-        )
+        conditions_long.append(dataframe["rsi"] < 20)
+        conditions_long.append(dataframe[self.candlestick_patterns].any(axis=1))
 
         # Check that volume is not 0
         conditions_long.append(dataframe["volume"] > 0)
@@ -167,8 +165,9 @@ class Testing(IStrategy):
         conditions_long = []
 
         conditions_long.append(
-            qtpylib.crossed_above(dataframe["sma_long"], dataframe["sma_short"])
+            (dataframe["rsi"] > 70)  # | (dataframe["bb_percent"] > 0.8)
         )
+
         # Check that volume is not 0
         conditions_long.append(dataframe["volume"] > 0)
 
