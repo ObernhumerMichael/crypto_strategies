@@ -44,7 +44,7 @@ from technical import qtpylib
 from functools import reduce
 
 
-class RSI_scalping(IStrategy):
+class RSI_SCALPING_ENGULFING(IStrategy):
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
@@ -93,26 +93,11 @@ class RSI_scalping(IStrategy):
 
     plot_config = {
         # Main plot indicators (Moving averages, ...)
-        "main_plot": {
-            "bb_upperband": {
-                "color": "orange",
-                "fill_to": "bb_lowerband",
-            },
-            "bb_middleband": {"color": "orange"},
-            "bb_lowerband": {"color": "orange"},
-            "sma_short": {"color": "blue"},
-            "sma_long": {"color": "yellow"},
-        },
+        "main_plot": {},
         "subplots": {
             # Subplots - each dict defines one additional plot
             "RSI": {
                 f"rsi": {"color": "red"},
-            },
-            "BB_width": {
-                "bb_width": {"color": "orange"},
-            },
-            "BB_percent": {
-                "bb_percent": {"color": "blue"},
             },
         },
     }
@@ -123,20 +108,7 @@ class RSI_scalping(IStrategy):
         # RSI
         dataframe[f"rsi"] = pta.rsi(dataframe["close"], length=self.rsi.value)
 
-        # Bollinger Bands
-        bollinger = qtpylib.bollinger_bands(
-            qtpylib.typical_price(dataframe), window=20, stds=2
-        )
-        dataframe["bb_lowerband"] = bollinger["lower"]
-        dataframe["bb_middleband"] = bollinger["mid"]
-        dataframe["bb_upperband"] = bollinger["upper"]
-        dataframe["bb_percent"] = (dataframe["close"] - dataframe["bb_lowerband"]) / (
-            dataframe["bb_upperband"] - dataframe["bb_lowerband"]
-        )
-        dataframe["bb_width"] = (
-            dataframe["bb_upperband"] - dataframe["bb_lowerband"]
-        ) / dataframe["bb_middleband"]
-
+        # candlestick_patterns
         dataframe[self.candlestick_patterns] = pta.cdl_pattern(
             open_=dataframe["open"],
             high=dataframe["high"],
@@ -164,9 +136,7 @@ class RSI_scalping(IStrategy):
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions_long = []
 
-        conditions_long.append(
-            (dataframe["rsi"] > 70)  # | (dataframe["bb_percent"] > 0.8)
-        )
+        conditions_long.append((dataframe["rsi"] > 70))
 
         # Check that volume is not 0
         conditions_long.append(dataframe["volume"] > 0)

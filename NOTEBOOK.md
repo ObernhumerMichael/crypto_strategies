@@ -1,5 +1,7 @@
 # RSI Scalping
 
+**Result:** loss
+
 **Timeframe:** 1-15m
 
 $$ Buy: RSI \downarrow 30 $$
@@ -23,6 +25,8 @@ $$ Sell: RSI \uparrow 70 $$
 - Works best in 15m timeframe.
 
 ## RSI Scalping + Candlestick patterns
+
+**Result:** profit
 
 **Timeframe:** 1m
 
