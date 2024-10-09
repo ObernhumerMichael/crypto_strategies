@@ -2,6 +2,7 @@
 # flake8: noqa: F401
 # isort: skip_file
 # --- Do not remove these imports ---
+from math import degrees
 from operator import length_hint
 import numpy as np
 import pandas as pd
@@ -78,10 +79,11 @@ class RSI_SCALPING_VOLUME(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 50
+    startup_candle_count: int = 30
 
     # Define the parameter spaces
     rsi = IntParameter(2, 20, default=14)
+    obv_len = IntParameter(1, 20, default=5)
 
     order_types = {
         "entry": "limit",
@@ -98,6 +100,16 @@ class RSI_SCALPING_VOLUME(IStrategy):
             "RSI": {
                 f"rsi": {"color": "red"},
             },
+            "OBV": {
+                f"obv": {"color": "blue"},
+                f"obv_ln": {"color": "orange"},
+            },
+            "OBV_an": {
+                f"angle": {"color": "blue"},
+            },
+            "OBV_r2": {
+                f"r2": {"color": "green"},
+            },
         },
     }
 
@@ -106,13 +118,19 @@ class RSI_SCALPING_VOLUME(IStrategy):
 
         # RSI
         dataframe[f"rsi"] = pta.rsi(dataframe["close"], length=self.rsi.value)
-
+        dataframe["obv"] = pta.obv(dataframe["close"], dataframe["volume"])
+        dataframe["obv_ln"] = pta.linreg(dataframe["obv"])
+        dataframe["angle"] = pta.linreg(dataframe["obv"], angle=True)
+        dataframe["r"] = pta.linreg(dataframe["obv"], r=True)
+        dataframe["r2"] = dataframe["r"] * dataframe["r"]
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions_long = []
 
         conditions_long.append(dataframe["rsi"] < 20)
+
+        # conditions_long.append(dataframe["obv"] > dataframe["obv"].shift(1))
 
         # Check that volume is not 0
         conditions_long.append(dataframe["volume"] > 0)
