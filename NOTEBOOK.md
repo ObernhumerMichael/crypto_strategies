@@ -10,25 +10,18 @@
     - [5. Market Strength Indicators (Track overall market movement)](#5-market-strength-indicators-track-overall-market-movement)
     - [6. Support/Resistance Indicators (Identify key price levels)](#6-supportresistance-indicators-identify-key-price-levels)
   - [Metrics](#metrics)
-- [Strategys](#strategys)
+- [Strategies](#strategies)
   - [RSI Scalping](#rsi-scalping)
     - [RSI Scalping + Candlestick patterns](#rsi-scalping-candlestick-patterns)
     - [RSI scalping + OBV](#rsi-scalping-obv)
-- [Other](#other)
-<!--toc:end-->
+  - [Linear Regression Scalping + RSI](#linear-regression-scalping-rsi)
+  <!--toc:end-->
 
 # General
 
 ## Ideas
 
-**Untested:**
-
-- Apply a linear regression on close or an SMA and use the angle to define if a strong trend happens.
-  - potential guard
-  - dont forget $|R| > 0.8$
-- Maybe focus more on the exit signals rather than the entry signals for RSI scalping.
-  Because the entry signals are mostly right but often close too late.
-  - dont just use stoploss
+_nothing to see here_
 
 ## Indicators
 
@@ -116,14 +109,14 @@
 
 **Result:** loss
 
-**Timeframe:** 1-15m
+**time frame:** 1-15m
 
 $$ Buy: RSI \downarrow 30 $$
 $$ Sell: RSI \uparrow 70 $$
 
 **Pros:**
 
-- The strategy works rather well if it closes witout hitting a stoploss, it almost always produces a profit.
+- The strategy works rather well if it closes without hitting a stop loss, it almost always produces a profit.
 - It works under most conditions.
 
 **Cons:**
@@ -133,16 +126,18 @@ $$ Sell: RSI \uparrow 70 $$
 
 **Notes:**
 
-- Adjusting the limits (eg 30 $\rightarrow$ 20) according to volatility helps.
-- Adjusting the stoploss can also help but the strategy needs some breathing room.
+- Adjusting the limits (e.g. 30 $\rightarrow$ 20) according to volatility helps.
+- Adjusting the stop loss can also help but the strategy needs some breathing room.
 - The strategy produces to much wrong signals in trending situations.
-- Works best in 15m timeframe.
+- Works best in 15m time frame.
 
 ### RSI Scalping + Candlestick patterns
 
 **Result:** profit
 
-**Timeframe:** 1m
+**time frame:** 1m
+
+**Strategy:** [RSIScalpingEngulfing](./strategies/RSIScalpingEngulfing.py)
 
 **Buy:**
 
@@ -158,11 +153,13 @@ $$RSI \uparrow 70 $$
 
 **Notes:**
 
-- Adjusting the limits (eg 20 $\rightarrow$ 30) produces too many false signals.
+- Adjusting the limits (e.g. 20 $\rightarrow$ 30) produces too many false signals.
 - Adding multiple candlestick patterns as triggers has not brought any significant improvement
   - But this has to be tested out more in the future on a broader timerange.
 
 ### RSI scalping + OBV
+
+**Strategy:** [RSIScalpingVolume](./strategies/RSIScalpingVolume.py)
 
 I couldn't really find a way to use the OBV to reduce false entry signals.
 
@@ -170,7 +167,7 @@ Because of the nature of RSI scalping the OBV is naturally low when the RSI indi
 This also means that the angle of the linear regression from the OBV is negative.
 
 The fault lies at the tight condition of $RSI < 20$ for buying.
-Because this condition mostly occures at the bottom of a downtrend or during a strong and long downtrend.
+Because this condition mostly occurs at the bottom of a downtrend or during a strong and long downtrend.
 
 **Note:**
 Other types of applications of the OBV have not been explored yet.
@@ -180,6 +177,39 @@ Other types of applications of the OBV have not been explored yet.
 - exit signal
 - supporting guard signal indicating a weakening in trend
 
-# Other
+## Linear Regression Scalping + RSI
 
-_nothing to see here yet_
+**Result:** loss
+
+**time frame:** 1m
+
+**Strategy:** [LinregScalping](./strategies/LinregScalping.py)
+
+**Buy:**
+
+$$ angle \uparrow 0 $$
+$$ r < 0.01 $$
+$$ RSI > 50 $$
+$$ RSI < 60 $$
+
+**Sell:**
+
+$$RSI \uparrow 70 $$
+
+**Pros:**
+
+- One is able to identify stronger trends relatively well
+- Able to determine the direction of the trend.
+- Able to check how valid the linear regression is.
+- Able to determine possible reversals.
+
+**Cons:**
+
+- Produces many false signals
+- Has problems when there is not much market movement
+
+**Notes:**
+
+- Angle cross has to be relatively sharp to be more or less valid
+- Possible application as trend indicator $\rightarrow$ must be tested
+- Possible application in validating other indicators
