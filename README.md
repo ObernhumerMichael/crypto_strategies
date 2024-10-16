@@ -17,7 +17,7 @@
     - [RSI](#rsi)
     - [RSI + Candlestick patterns (Engulfing)](#rsi-candlestick-patterns-engulfing)
     - [RSI + Volume (OBV)](#rsi-volume-obv)
-  - [Linear Regression + RSI](#linear-regression-rsi)
+    - [Linear Regression + RSI](#linear-regression-rsi)
   - [Trend Following](#trend-following)
     - [SMA + RSI](#sma-rsi)
 - [Final Thoughts](#final-thoughts)
@@ -254,7 +254,7 @@ Other types of applications of the OBV have not been explored yet.
 - exit signal
 - supporting guard signal indicating a weakening in trend
 
-## Linear Regression + RSI
+### Linear Regression + RSI
 
 **Result:** loss
 
@@ -311,7 +311,7 @@ $$RSI < 70$$
 
 $$SMA_{short} \downarrow SMA_{long}$$
 $$RSI < 50$$
-$$RSI > 40$$
+$$RSI > 30$$
 
 **Pros:**
 
