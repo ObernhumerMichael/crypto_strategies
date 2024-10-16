@@ -44,7 +44,7 @@ from technical import qtpylib
 from functools import reduce
 
 
-class RSI_SCALPING_ENGULFING(IStrategy):
+class SC_RSI_Engulfing(IStrategy):
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3

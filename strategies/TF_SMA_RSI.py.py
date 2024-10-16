@@ -38,7 +38,7 @@ from technical import qtpylib
 from functools import reduce
 
 
-class AwesomeStrategy(IStrategy):
+class TF_SMA_RSI(IStrategy):
     """
     This is a strategy template to get you started.
     More information in https://www.freqtrade.io/en/latest/strategy-customization/

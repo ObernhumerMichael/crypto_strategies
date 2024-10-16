@@ -43,10 +43,9 @@ from technical import qtpylib
 # --------------------------------
 # Backtesting
 from functools import reduce
-import math
 
 
-class LINREG_SCALPING(IStrategy):
+class SC_RSI_VOLUME(IStrategy):
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
@@ -80,11 +79,11 @@ class LINREG_SCALPING(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 60
+    startup_candle_count: int = 30
 
     # Define the parameter spaces
     rsi = IntParameter(2, 20, default=14)
-    linreg_len = IntParameter(2, 200, default=50)
+    obv_len = IntParameter(1, 20, default=5)
 
     order_types = {
         "entry": "limit",
@@ -95,20 +94,21 @@ class LINREG_SCALPING(IStrategy):
 
     plot_config = {
         # Main plot indicators (Moving averages, ...)
-        "main_plot": {
-            f"close_ln": {"color": "orange"},
-            f"sma": {"color": "blue"},
-        },
+        "main_plot": {},
         "subplots": {
             # Subplots - each dict defines one additional plot
             "RSI": {
                 f"rsi": {"color": "red"},
             },
-            "Lin Reg Angle": {
+            "OBV": {
+                f"obv": {"color": "blue"},
+                f"obv_ln": {"color": "orange"},
+            },
+            "OBV_an": {
                 f"angle": {"color": "blue"},
             },
-            "Lin Reg R": {
-                f"r": {"color": "green"},
+            "OBV_r2": {
+                f"r2": {"color": "green"},
             },
         },
     }
@@ -118,32 +118,19 @@ class LINREG_SCALPING(IStrategy):
 
         # RSI
         dataframe[f"rsi"] = pta.rsi(dataframe["close"], length=self.rsi.value)
-
-        # Linreg
-        dataframe["close_ln"] = pta.linreg(
-            dataframe["close"], length=self.linreg_len.value
-        )
-        dataframe["angle_temp"] = pta.linreg(
-            dataframe["close"], length=self.linreg_len.value, angle=True
-        )
-        dataframe["angle"] = dataframe["angle_temp"] * 180 / math.pi
-        r = pta.linreg(dataframe["close"], length=self.linreg_len.value, r=True)
-        dataframe["r"] = r.abs()
-
-        # SMA
-        dataframe["sma"] = pta.sma(dataframe["close"], length=self.linreg_len.value)
+        dataframe["obv"] = pta.obv(dataframe["close"], dataframe["volume"])
+        dataframe["obv_ln"] = pta.linreg(dataframe["obv"])
+        dataframe["angle"] = pta.linreg(dataframe["obv"], angle=True)
+        dataframe["r"] = pta.linreg(dataframe["obv"], r=True)
+        dataframe["r2"] = dataframe["r"] * dataframe["r"]
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions_long = []
 
-        # cross above 0
-        conditions_long.append(dataframe["angle"] > 0)
-        conditions_long.append(dataframe["angle"].shift(1) < 0)
+        conditions_long.append(dataframe["rsi"] < 20)
 
-        conditions_long.append(dataframe["r"] < 0.01)
-        conditions_long.append((dataframe["rsi"] > 50))
-        conditions_long.append((dataframe["rsi"] < 60))
+        # conditions_long.append(dataframe["obv"] > dataframe["obv"].shift(1))
 
         # Check that volume is not 0
         conditions_long.append(dataframe["volume"] > 0)
@@ -155,11 +142,8 @@ class LINREG_SCALPING(IStrategy):
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions_long = []
-        conditions_long.append(
-            (dataframe["rsi"] > 70)
-            # | ((dataframe["angle"].shift(1) > 0) & (dataframe["angle"] < 0)),
-            # | (qtpylib.crossed_below(dataframe["close_ln"], dataframe["sma"]))
-        )
+
+        conditions_long.append((dataframe["rsi"] > 70))
 
         # Check that volume is not 0
         conditions_long.append(dataframe["volume"] > 0)
