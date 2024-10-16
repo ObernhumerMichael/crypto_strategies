@@ -4,22 +4,22 @@
   - [Ideas](#ideas)
   - [Notations](#notations)
   - [Indicators](#indicators)
-    - [1. Trend Indicators (Show the direction of the market)](#1-trend-indicators-show-the-direction-of-the-market)
-    - [2. Momentum Indicators (Reveal the strength of price movement)](#2-momentum-indicators-reveal-the-strength-of-price-movement)
-    - [3. Volatility Indicators (Highlight the intensity of price fluctuations)](#3-volatility-indicators-highlight-the-intensity-of-price-fluctuations)
-    - [4. Volume Indicators (Confirm the strength behind price trends)](#4-volume-indicators-confirm-the-strength-behind-price-trends)
-    - [5. Market Strength Indicators (Track overall market movement)](#5-market-strength-indicators-track-overall-market-movement)
-    - [6. Support/Resistance Indicators (Identify key price levels)](#6-supportresistance-indicators-identify-key-price-levels)
+    - [Trend Indicators](#trend-indicators)
+    - [Momentum Indicators](#momentum-indicators)
+    - [Volatility Indicators](#volatility-indicators)
+    - [Volume Indicators](#volume-indicators)
+    - [Market Strength Indicators](#market-strength-indicators)
+    - [Support and Resistance Indicators](#support-and-resistance-indicators)
   - [Metrics](#metrics)
   - [Trading Strategy Types](#trading-strategy-types)
 - [Strategies](#strategies)
   - [Scalping](#scalping)
     - [RSI](#rsi)
-    - [RSI + Candlestick patterns (Engulfing)](#rsi-candlestick-patterns-engulfing)
-    - [RSI + Volume (OBV)](#rsi-volume-obv)
-    - [Linear Regression + RSI](#linear-regression-rsi)
+    - [RSI and Engulfing](#rsi-and-engulfing)
+    - [RSI and OBV](#rsi-and-obv)
+    - [Linear Regression and RSI](#linear-regression-and-rsi)
   - [Trend Following](#trend-following)
-    - [SMA + RSI](#sma-rsi)
+    - [SMA and RSI](#sma-and-rsi)
 - [Final Thoughts](#final-thoughts)
 <!--toc:end-->
 
@@ -42,41 +42,53 @@ _nothing to see_
 
 ## Indicators
 
-### 1. Trend Indicators (Show the direction of the market)
+### Trend Indicators
+
+Show the direction of the market..
 
 - **Moving Averages (MA):** Simple Moving Average (SMA), Exponential Moving Average (EMA) – Smooth out price data to show the overall direction of the trend.
 - **Moving Average Convergence Divergence (MACD):** Measures the relationship between two EMAs to show trend direction and strength.
 - **Average Directional Index (ADX):** Indicates the strength of a trend but not its direction.
 - **Parabolic SAR:** Highlights potential reversal points by showing dots on the chart above or below price.
 
-### 2. Momentum Indicators (Reveal the strength of price movement)
+### Momentum Indicators
+
+Reveal the strength of price movement.
 
 - **Relative Strength Index (RSI):** Measures the speed and change of price movements, typically to identify overbought or oversold conditions.
 - **Stochastic Oscillator:** Compares a specific closing price to a range of its prices over time, showing potential reversal points.
 - **Commodity Channel Index (CCI):** Measures how far a price has deviated from its average, used to identify momentum and potential reversals.
 - **Rate of Change (ROC):** Measures the percentage change between the current price and a price from a certain number of periods ago.
 
-### 3. Volatility Indicators (Highlight the intensity of price fluctuations)
+### Volatility Indicators
+
+Highlight the intensity of price fluctuations.
 
 - **Bollinger Bands:** Use standard deviations to show volatility; when the bands widen, volatility increases.
 - **Average True Range (ATR):** Measures the average range between high and low prices to gauge volatility.
 - **Keltner Channels:** Similar to Bollinger Bands but based on ATR, highlighting volatility.
 - **Donchian Channels:** Highlight the highest and lowest prices over a specific period, showing volatility and potential breakout points.
 
-### 4. Volume Indicators (Confirm the strength behind price trends)
+### Volume Indicators
+
+Confirm the strength behind price trends.
 
 - **On-Balance Volume (OBV):** Combines price and volume to show the cumulative buying and selling pressure.
 - **Volume Price Trend (VPT):** Similar to OBV but includes the percentage change in price.
 - **Chaikin Money Flow (CMF):** Measures buying and selling pressure using price and volume.
 - **Accumulation/Distribution (A/D) Line:** Looks at volume and price to assess whether a stock is being accumulated (buying) or distributed (selling).
 
-### 5. Market Strength Indicators (Track overall market movement)
+### Market Strength Indicators
+
+Track overall market movement.
 
 - **Advance/Decline Line (A/D Line):** Tracks the number of advancing vs. declining stocks to gauge overall market strength.
 - **McClellan Oscillator:** A breadth indicator that looks at the rate of change between advancing and declining issues.
 - **Arms Index (TRIN):** Measures the relationship between advancing and declining stocks and their volume.
 
-### 6. Support/Resistance Indicators (Identify key price levels)
+### Support and Resistance Indicators
+
+Identify key price levels.
 
 - **Pivot Points:** Calculate potential support and resistance levels based on the previous period’s price action.
 - **Fibonacci Retracement:** Shows potential levels of support or resistance by using Fibonacci ratios.
@@ -208,7 +220,7 @@ $$ Sell: RSI \uparrow 70 $$
 - The strategy produces to much wrong signals in trending situations.
 - Works best in 15m time frame.
 
-### RSI + Candlestick patterns (Engulfing)
+### RSI and Engulfing
 
 **Result:** profit
 
@@ -234,7 +246,7 @@ $$RSI \uparrow 70 $$
 - Adding multiple candlestick patterns as triggers has not brought any significant improvement
   - But this has to be tested out more in the future on a broader timerange.
 
-### RSI + Volume (OBV)
+### RSI and OBV
 
 **Strategy:** [SC_RSI_VOLUME](./strategies/SC_RSI_VOLUME.py)
 
@@ -254,7 +266,7 @@ Other types of applications of the OBV have not been explored yet.
 - exit signal
 - supporting guard signal indicating a weakening in trend
 
-### Linear Regression + RSI
+### Linear Regression and RSI
 
 **Result:** loss
 
@@ -293,7 +305,7 @@ $$RSI \uparrow 70 $$
 
 ## Trend Following
 
-### SMA + RSI
+### SMA and RSI
 
 **Result:** profit
 
