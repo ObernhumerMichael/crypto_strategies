@@ -1,6 +1,7 @@
 <!--toc:start-->
 
 - [General](#general)
+  - [Freqtrade commands](#freqtrade-commands)
   - [Ideas](#ideas)
   - [Notations](#notations)
   - [Indicators](#indicators)
@@ -20,6 +21,7 @@
     - [Linear Regression and RSI](#linear-regression-and-rsi)
   - [Trend Following](#trend-following)
     - [SMA and RSI](#sma-and-rsi)
+      - [SMA and RSI v2](#sma-and-rsi-v2)
 - [Final Thoughts](#final-thoughts)
 <!--toc:end-->
 
@@ -45,7 +47,8 @@ freqtrade download-data -c ./user_data/config.json --days 365 --timeframes 1m 5m
 
 ## Ideas
 
-_nothing to see_
+- Using ATR to set custom stop losses could significantly improve multiple strategies.
+  _see [SMA and RSI v2](#sma-and-rsi-v2)_
 
 ## Notations
 
@@ -325,7 +328,7 @@ $$RSI \uparrow 70 $$
 
 **time frame:** 15m
 
-**Strategy:** [TF_SMA_RSI](./strategies/TF_SMA_RSI.py.py)
+**Strategy:** [TF_SMA_RSI](./strategies/TF_SMA_RSI.py)
 
 **Buy:**
 
@@ -352,6 +355,13 @@ $$RSI > 30$$
 **Notes:**
 
 - A rather solid trading strategy for strongly trending markets.
+
+#### SMA and RSI v2
+
+Same as the default but uses ATR to make custom stoplosses.
+This improves the trading results significantly.
+
+**Strategy:** [TF_SMA_RSI](./strategies/TF_SMA_RSI_V2.py)
 
 # Final Thoughts
 
