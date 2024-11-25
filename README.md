@@ -29,6 +29,20 @@ This is my notebook about crypto trading.
 It contains my experience with various trading strategies.
 All the strategy files are written for [freqtrade](https://www.freqtrade.io/en/stable/).
 
+## Freqtrade commands
+
+Start the webserver:
+
+```sh
+freqtrade webserver
+```
+
+To download the data for pairs specified in the config.json
+
+```sh
+freqtrade download-data -c ./user_data/config.json --days 365 --timeframes 1m 5m 15m 1h
+```
+
 ## Ideas
 
 _nothing to see_
