@@ -13,15 +13,19 @@
     - [Support and Resistance Indicators](#support-and-resistance-indicators)
   - [Metrics](#metrics)
   - [Trading Strategy Types](#trading-strategy-types)
+- [Snippets](#snippets)
+  - [Custom Stoploss](#custom-stoploss)
+    - [Non trailing stoploss](#non-trailing-stoploss)
 - [Strategies](#strategies)
   - [Scalping](#scalping)
     - [RSI](#rsi)
     - [RSI and Engulfing](#rsi-and-engulfing)
+      - [RSI and Engulfing with custom stoploss](#rsi-and-engulfing-with-custom-stoploss)
     - [RSI and OBV](#rsi-and-obv)
     - [Linear Regression and RSI](#linear-regression-and-rsi)
   - [Trend Following](#trend-following)
     - [SMA and RSI](#sma-and-rsi)
-      - [SMA and RSI v2](#sma-and-rsi-v2)
+      - [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss)
 - [Final Thoughts](#final-thoughts)
 <!--toc:end-->
 
@@ -47,8 +51,7 @@ freqtrade download-data -c ./user_data/config.json --days 365 --timeframes 1m 5m
 
 ## Ideas
 
-- Using ATR to set custom stop losses could significantly improve multiple strategies.
-  _see [SMA and RSI v2](#sma-and-rsi-v2)_
+_nothing to see here_
 
 ## Notations
 
@@ -207,6 +210,27 @@ Identify key price levels.
 1. **Grid Trading**  
    Traders place buy and sell orders at predefined intervals (grid) around a set price to profit from market fluctuations, especially in sideways markets.
 
+# Snippets
+
+## Custom Stoploss
+
+### Non trailing stoploss
+
+**Snippet:** [non_trailing_stoploss](./snippets/custom_stoploss/non_trailing_stoploss.py)
+
+**Explanation:** This sets the stoploss to a value defined in `populate_indicators` at trade entry.
+
+**Possible use case:** Giving more/less breathing room for the market depending on the situation.
+This can possible improve the chance for good signals to take effect and limit the losses of false signals.
+
+**Example**:
+Using a multiple of ATR as the stoploss. _see [volatility-indicators](#volatility-indicators)_
+
+$$ stoploss=ATR \* multiplier / CLOSE $$
+
+> [!NOTE]
+> The stoploss must be in percent. eg: 1% = 0.01
+
 # Strategies
 
 ## Scalping
@@ -262,6 +286,20 @@ $$RSI \uparrow 70 $$
 - Adjusting the limits (e.g. 20 $\rightarrow$ 30) produces too many false signals.
 - Adding multiple candlestick patterns as triggers has not brought any significant improvement
   - But this has to be tested out more in the future on a broader timerange.
+
+#### RSI and Engulfing with custom stoploss
+
+Same as the default but uses ATR to make custom stoplosses.
+
+**Result:** profit
+
+**Strategy:** [SC_RSI_Engulfing_V2](./strategies/SC_RSI_Engulfing_V2.py)
+
+**Notes:**
+
+- This does not improve the trading results as the custom stoploss sets the breathing room to tight.
+- The candlestick patter already filters out most false signals.
+- The stoploss cancels the good signals too early resulting in smaller profits.
 
 ### RSI and OBV
 
@@ -356,12 +394,19 @@ $$RSI > 30$$
 
 - A rather solid trading strategy for strongly trending markets.
 
-#### SMA and RSI v2
+#### SMA and RSI with custom stoploss
 
 Same as the default but uses ATR to make custom stoplosses.
-This improves the trading results significantly.
 
 **Strategy:** [TF_SMA_RSI](./strategies/TF_SMA_RSI_V2.py)
+
+**Result:** profit
+
+**Notes:**
+
+- This improves the trading results significantly.
+- The custom stoploss helps to minimize the losses on false signals.
+- The custom stoploss gives the indicator more breathing room when needed.
 
 # Final Thoughts
 
