@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.freqtrade.io/schema.json",
+  "telegram": {
+    "token": "",
+    "chat_id": ""
+  },
+  "api_server": {
+    "jwt_secret_key": "",
+    "ws_token": "",
+    "CORS_origins": [],
+    "username": "",
+    "password": ""
+  },
+  "exchange": {
+    "key": "",
+    "secret": ""
+  }
+}
