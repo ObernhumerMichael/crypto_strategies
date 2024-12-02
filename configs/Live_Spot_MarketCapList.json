@@ -2,12 +2,12 @@
   "$schema": "https://schema.freqtrade.io/schema.json",
   "add_config_files": ["config-private.json"],
   "strategy_path": "/home/michi/Applications/trading/crypto_strategies/strategies",
-  "max_open_trades": 1,
+  "max_open_trades": 10,
   "stake_currency": "USDT",
   "stake_amount": "unlimited",
   "tradable_balance_ratio": 0.99,
   "fiat_display_currency": "EUR",
-  "dry_run": true,
+  "dry_run": false,
   "dry_run_wallet": 1000,
   "cancel_open_orders_on_exit": false,
   "trading_mode": "spot",
@@ -37,37 +37,20 @@
     "name": "binance",
     "ccxt_config": {},
     "ccxt_async_config": {},
-    "pair_whitelist": [
-      "BTC/USDT",
-      "ETH/USDT",
-      "XRP/USDT",
-      "DOGE/USDT",
-      "SOL/USDT",
-      "XLM/USDT",
-      "PEPE/USDT",
-      "ADA/USDT",
-      "SAND/USDT",
-      "AVAX/USDT",
-      "ARB/USDT",
-      "WIF/USDT",
-      "SUI/USDT",
-      "SHIB/USDT",
-      "PNUT/USDT",
-      "TRX/USDT",
-      "LINK/USDT",
-      "SEI/USDT",
-      "ENS/USDT",
-      "ETC/USDT"
-    ],
-    "pair_blacklist": ["BNB/.*"]
+    "pair_whitelist": [],
+    "pair_blacklist": ["BNB/.*", "USDT/.*", "USDC/.*", "FDUSD/.*"]
   },
   "pairlists": [
     {
-      "method": "StaticPairList"
+      "method": "MarketCapPairList",
+      "number_assets": 50,
+      "max_rank": 120,
+      "categories": [],
+      "refresh_period": 86400
     }
   ],
   "telegram": {
-    "enabled": false
+    "enabled": true
   },
   "api_server": {
     "enabled": true,

@@ -100,7 +100,7 @@ class TF_SMA_RSI_V2(IStrategy):
     rsi_upper_bound = 70
     rsi_lower_bound = 30
 
-    atr_multiplier = 6
+    atr_multiplier = 7
     atr_length = 14
 
     order_types = {

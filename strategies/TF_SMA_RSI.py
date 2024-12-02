@@ -68,7 +68,7 @@ class TF_SMA_RSI(IStrategy):
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
-    minimal_roi = {"0": 0.10}
+    # minimal_roi = {"0": 0.10}
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".

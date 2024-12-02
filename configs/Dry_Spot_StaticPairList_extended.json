@@ -37,8 +37,29 @@
     "name": "binance",
     "ccxt_config": {},
     "ccxt_async_config": {},
-    "pair_whitelist": ["BTC/USDT"],
-    "pair_blacklist": ["BNB/.*"]
+    "pair_whitelist": [
+      "BTC/USDT",
+      "ETH/USDT",
+      "XRP/USDT",
+      "DOGE/USDT",
+      "SOL/USDT",
+      "XLM/USDT",
+      "PEPE/USDT",
+      "ADA/USDT",
+      "SAND/USDT",
+      "AVAX/USDT",
+      "ARB/USDT",
+      "WIF/USDT",
+      "SUI/USDT",
+      "SHIB/USDT",
+      "PNUT/USDT",
+      "TRX/USDT",
+      "LINK/USDT",
+      "SEI/USDT",
+      "ENS/USDT",
+      "ETC/USDT"
+    ],
+    "pair_blacklist": ["BNB/.*", "USDT/.*", "USDC/.*", "FDUSD/.*"]
   },
   "pairlists": [
     {
