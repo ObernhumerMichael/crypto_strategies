@@ -2,6 +2,7 @@
 
 - [General](#general)
   - [Freqtrade commands](#freqtrade-commands)
+  - [ToDo](#todo)
   - [Ideas](#ideas)
   - [General](#general)
     - [SC RSI Strategies](#sc-rsi-strategies)
@@ -29,6 +30,7 @@
     - [SMA and RSI](#sma-and-rsi)
       - [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss)
       - [Bidirectional SMA and RSI with custom stoploss](#bidirectional-sma-and-rsi-with-custom-stoploss)
+      - [SMA and RSI with ATR based stoploss and ROI](#sma-and-rsi-with-atr-based-stoploss-and-roi)
 - [Final Thoughts](#final-thoughts)
 <!--toc:end-->
 
@@ -51,6 +53,10 @@ To download the data for pairs specified in the config.json
 ```sh
 freqtrade download-data -c ./user_data/config.json --days 365 --timeframes 1m 5m 15m 1h
 ```
+
+## ToDo
+
+- [ ] Make use of the derived strategy feature.
 
 ## Ideas
 
@@ -304,7 +310,7 @@ $$RSI \uparrow 70 $$
 
 Same as [RSI and Engulfing](#rsi-and-engulfing) but uses ATR to make custom stoplosses.
 
-**Result:** profit
+**Result:** profit --
 
 **Strategy:** [SC_RSI_Engulfing_V2](./strategies/SC_RSI_Engulfing_V2.py)
 
@@ -413,7 +419,7 @@ Same as the default but uses ATR to make custom stoplosses.
 
 **Strategy:** [TF_SMA_RSI_V2](./strategies/TF_SMA_RSI_V2.py)
 
-**Result:** profit
+**Result:** profit ++
 
 **Notes:**
 
@@ -428,12 +434,26 @@ The short conditions are the inverse to the long positions.
 
 **Strategy:** [TF_SMA_RSI_V3](./strategies/TF_SMA_RSI_V3.py)
 
-**Result:** profit
+**Result:** profit --
 
 **Notes:**
 
 - This does NOT improve the original strategy.
-- There are more false signals on short trades than long which leads to smaller profits.
+- There are more false signals on short trades than long ones, which leads to smaller profits.
+
+#### SMA and RSI with ATR based stoploss and ROI
+
+Same as [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss) but it also introduces a custom ROI based on ATR.
+
+**Strategy:** [TF_SMA_RSI_V4](./strategies/TF_SMA_RSI_V4.py)
+
+**Result:** profit --
+
+**Notes:**
+
+- This does NOT improve the original strategy.
+- The custom ROI takes away the meaning of trend following.
+- It closes most trades either through ROI or Stoploss.
 
 # Final Thoughts
 
