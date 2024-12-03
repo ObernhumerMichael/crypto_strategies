@@ -3,6 +3,8 @@
 - [General](#general)
   - [Freqtrade commands](#freqtrade-commands)
   - [Ideas](#ideas)
+  - [General](#general)
+    - [SC RSI Strategies](#sc-rsi-strategies)
   - [Notations](#notations)
   - [Indicators](#indicators)
     - [Trend Indicators](#trend-indicators)
@@ -26,6 +28,7 @@
   - [Trend Following](#trend-following)
     - [SMA and RSI](#sma-and-rsi)
       - [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss)
+      - [Bidirectional SMA and RSI with custom stoploss](#bidirectional-sma-and-rsi-with-custom-stoploss)
 - [Final Thoughts](#final-thoughts)
 <!--toc:end-->
 
@@ -51,7 +54,17 @@ freqtrade download-data -c ./user_data/config.json --days 365 --timeframes 1m 5m
 
 ## Ideas
 
-_nothing to see here_
+## General
+
+- Use custom ROI with the help of `custom_exit`.
+  Maybe use a multiple of ATR similar to `non_trailing_stoploss`.
+- Implement a risk-reward system using `custom_stoploss` and `custom_exit (ROI)`.
+
+### SC RSI Strategies
+
+- Adjust the ATR multiplier.
+- Use small ROI but on many coins.
+- Use simple RSI scalping but with ATR base stoploss/ROI.
 
 ## Notations
 
@@ -289,7 +302,7 @@ $$RSI \uparrow 70 $$
 
 #### RSI and Engulfing with custom stoploss
 
-Same as the default but uses ATR to make custom stoplosses.
+Same as [RSI and Engulfing](#rsi-and-engulfing) but uses ATR to make custom stoplosses.
 
 **Result:** profit
 
@@ -398,7 +411,7 @@ $$RSI > 30$$
 
 Same as the default but uses ATR to make custom stoplosses.
 
-**Strategy:** [TF_SMA_RSI](./strategies/TF_SMA_RSI_V2.py)
+**Strategy:** [TF_SMA_RSI_V2](./strategies/TF_SMA_RSI_V2.py)
 
 **Result:** profit
 
@@ -407,6 +420,20 @@ Same as the default but uses ATR to make custom stoplosses.
 - This improves the trading results significantly.
 - The custom stoploss helps to minimize the losses on false signals.
 - The custom stoploss gives the indicator more breathing room when needed.
+
+#### Bidirectional SMA and RSI with custom stoploss
+
+Same as [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss) but it also allows short positions.
+The short conditions are the inverse to the long positions.
+
+**Strategy:** [TF_SMA_RSI_V3](./strategies/TF_SMA_RSI_V3.py)
+
+**Result:** profit
+
+**Notes:**
+
+- This does NOT improve the original strategy.
+- There are more false signals on short trades than long which leads to smaller profits.
 
 # Final Thoughts
 
