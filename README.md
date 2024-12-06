@@ -31,6 +31,7 @@
       - [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss)
       - [Bidirectional SMA and RSI with custom stoploss](#bidirectional-sma-and-rsi-with-custom-stoploss)
       - [SMA and RSI with ATR based stoploss and ROI](#sma-and-rsi-with-atr-based-stoploss-and-roi)
+      - [SMA and RSI with ATR based position adjustment](#sma-and-rsi-with-atr-based-position-adjustment)
 - [Final Thoughts](#final-thoughts)
 <!--toc:end-->
 
@@ -454,6 +455,21 @@ Same as [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss) bu
 - This does NOT improve the original strategy.
 - The custom ROI takes away the meaning of trend following.
 - It closes most trades either through ROI or Stoploss.
+
+#### SMA and RSI with ATR based position adjustment
+
+Same as [SMA and RSI with custom stoploss](#sma-and-rsi-with-custom-stoploss),
+but it also introduces a halfing of the position when the profit reaches a certain amount based on an ATR multiple.
+
+**Strategy:** [TF_SMA_RSI_V5](./strategies/TF_SMA_RSI_V5.py)
+
+**Result:** profit --
+
+**Notes:**
+
+- This does not improve the original strategy in terms of profit.
+- I increases the win rate of the strategy and reduces risks.
+- With properly adjusted parameters I think this type of adjustment can help with risk management.
 
 # Final Thoughts
 
