@@ -59,7 +59,7 @@
       "ENS/USDT",
       "ETC/USDT"
     ],
-    "pair_blacklist": ["BNB/.*", "USDT/.*", "USDC/.*", "FDUSD/.*"]
+    "pair_blacklist": ["BNB/.*", "USDT/.*", "USDC/.*", "FDUSD/.*", "TUSD/.*"]
   },
   "pairlists": [
     {

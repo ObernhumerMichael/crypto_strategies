@@ -37,7 +37,12 @@
     "name": "binance",
     "ccxt_config": {},
     "ccxt_async_config": {},
-    "pair_blacklist": ["BNB/.*", "USDC/USDT:USDT", "FDUSD/USDT:USDT"],
+    "pair_blacklist": [
+      "BNB/.*",
+      "USDC/USDT:USDT",
+      "FDUSD/USDT:USDT",
+      "TUSD/USDT:USDT"
+    ],
     "pair_whitelist": [
       "BTC/USDT:USDT",
       "ETH/USDT:USDT",
