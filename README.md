@@ -471,8 +471,32 @@ but it also introduces a halfing of the position when the profit reaches a certa
 - I increases the win rate of the strategy and reduces risks.
 - With properly adjusted parameters I think this type of adjustment can help with risk management.
 
+### EMA Crossover + MACD Confirmation
+
+Indicators: 5 EMA + 20 EMA + MACD (12,26,9).
+
+**Strategy:**
+**Buy:**
+
+$$EMA_{short} \uparrow EMA_{long} && MACD_{positive}$$
+
+**Sell:**
+$$EMA_{short} \downarrow EMA_{long} || MACD_{negative}$$
+
+**Pros:**
+Strong in trending markets (e.g., ETH during a breakout).
+
+**Cons:**
+Whipsaws in choppy markets.
+
+**When to Use:**
+During strong uptrends/downtrends (check with ADX > 25).
+
 # Final Thoughts
 
 This only contains my own personal experience.
 **ALWAYS** do your own research.
 I am in no way responsible for any trading results.
+
+$$
+$$
