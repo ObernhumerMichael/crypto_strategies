@@ -3,7 +3,7 @@
   "add_config_files": ["config-private.json"],
   "strategy_path": "/home/michi/Applications/trading/crypto_strategies/strategies",
   "max_open_trades": 10,
-  "stake_currency": "USDT",
+  "stake_currency": "USDC",
   "stake_amount": "unlimited",
   "tradable_balance_ratio": 0.99,
   "fiat_display_currency": "EUR",
