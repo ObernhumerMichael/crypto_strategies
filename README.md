@@ -32,6 +32,7 @@
       - [Bidirectional SMA and RSI with custom stoploss](#bidirectional-sma-and-rsi-with-custom-stoploss)
       - [SMA and RSI with ATR based stoploss and ROI](#sma-and-rsi-with-atr-based-stoploss-and-roi)
       - [SMA and RSI with ATR based position adjustment](#sma-and-rsi-with-atr-based-position-adjustment)
+    - [EMA Crossover + MACD Confirmation](#ema-crossover-macd-confirmation)
 - [Final Thoughts](#final-thoughts)
 <!--toc:end-->
 
@@ -473,15 +474,20 @@ but it also introduces a halfing of the position when the profit reaches a certa
 
 ### EMA Crossover + MACD Confirmation
 
-Indicators: 5 EMA + 20 EMA + MACD (12,26,9).
+**Strategy:** [TF_EMA_MACD](./strategies/TF_EMA_MACD.py)
 
-**Strategy:**
+**Result:** loss
+
+Stoploss is ATR based.
+
 **Buy:**
-
-$$EMA_{short} \uparrow EMA_{long} && MACD_{positive}$$
+$$EMA_{short} \uparrow EMA_{long}$$
+$$MACD_{positive}$$
+$$MACD_{-1} < MACD$$
+$$ADX > 25$$
 
 **Sell:**
-$$EMA_{short} \downarrow EMA_{long} || MACD_{negative}$$
+$$EMA_{short} \downarrow EMA_{long}$$
 
 **Pros:**
 Strong in trending markets (e.g., ETH during a breakout).
@@ -497,6 +503,3 @@ During strong uptrends/downtrends (check with ADX > 25).
 This only contains my own personal experience.
 **ALWAYS** do your own research.
 I am in no way responsible for any trading results.
-
-$$
-$$

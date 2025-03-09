@@ -38,7 +38,7 @@ from technical import qtpylib
 from functools import reduce
 
 
-class TF_EMA_MACD(IStrategy):
+class TF_EMA_SMA(IStrategy):
     """
     This is a strategy template to get you started.
     More information in https://www.freqtrade.io/en/latest/strategy-customization/
@@ -68,12 +68,12 @@ class TF_EMA_MACD(IStrategy):
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
-    minimal_roi = {"0": 0.02}
+    minimal_roi = {"0": 0.025}
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
     stoploss = -0.02
-    use_custom_stoploss = True
+    use_custom_stoploss = False
 
     # Trailing stoploss
     trailing_stop = False
@@ -90,11 +90,12 @@ class TF_EMA_MACD(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 310
+    startup_candle_count: int = 200
 
     # Strategy parameters
-    ema_short = 20
-    ema_long = 99
+    ema_short = 50
+    ema_long = 200
+    sma = 24 * 5
     adx_guard = 25
     atr_multiplier = 6
     atr_length = 14
@@ -116,14 +117,10 @@ class TF_EMA_MACD(IStrategy):
             "main_plot": {
                 "ema_short": {"color": "blue"},
                 "ema_long": {"color": "yellow"},
+                "sma_1h": {"color": "green"},
             },
             "subplots": {
                 # Subplots - each dict defines one additional plot
-                "MACD": {
-                    "macd": {"color": "blue"},
-                    "macdsignal": {"color": "orange"},
-                    "macdhist": {"color": "violet", "type": "bar"},
-                },
                 "ADX": {
                     "adx": {"color": "red"},
                 },
@@ -158,6 +155,11 @@ class TF_EMA_MACD(IStrategy):
         # don't update stoploss value
         return None
 
+    @informative("1h")
+    def populate_indicators_1h(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe["sma"] = ta.SMA(dataframe, timeperiod=self.sma)
+        return dataframe
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Adds several different TA indicators to the given DataFrame
@@ -185,13 +187,7 @@ class TF_EMA_MACD(IStrategy):
         # ADX
         dataframe["adx"] = ta.ADX(dataframe)
 
-        # MACD
-        macd = ta.MACD(dataframe)
-        dataframe["macd"] = macd["macd"]
-        dataframe["macdsignal"] = macd["macdsignal"]
-        dataframe["macdhist"] = macd["macdhist"]
-
-        # #MA
+        # MA
         dataframe[f"ema_short"] = ta.EMA(dataframe, timeperiod=self.ema_short)
         dataframe[f"ema_long"] = ta.EMA(dataframe, timeperiod=self.ema_long)
 
@@ -215,11 +211,10 @@ class TF_EMA_MACD(IStrategy):
 
         # Guard
         conditions.append(dataframe["adx"] > self.adx_guard)
-        conditions.append(dataframe["macdhist"] > 0)
-        conditions.append(dataframe["macdhist"].shift(1) < dataframe["macdhist"])
 
         # Check that volume is not 0
         conditions.append(dataframe["volume"] > 0)
+        conditions.append(dataframe["sma_1h"] > 0)
 
         if conditions:
             dataframe.loc[reduce(lambda x, y: x & y, conditions), "enter_long"] = 1
@@ -235,13 +230,11 @@ class TF_EMA_MACD(IStrategy):
         conditions = []
         # Trigger
         conditions.append(
-            qtpylib.crossed_above(
-                dataframe[f"ema_long"],
-                dataframe[f"ema_short"],
+            qtpylib.crossed_below(
+                dataframe[f"close"],
+                dataframe[f"sma_1h"],
             )
         )
-
-        # Guard
 
         # Check that volume is not 0
         conditions.append(dataframe["volume"] > 0)
